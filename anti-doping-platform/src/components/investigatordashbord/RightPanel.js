@@ -5,13 +5,13 @@ import AccessToSocialMedia from './AccessToSocialMedia'; // Import the missing c
 import FinancialTransactions from './FinancialTransactions'; // Import the missing component
 import TravelHistory from './TravelHistory'; // Import the missing component
 
-const RightPanel = ({ selectedSection }) => {
+const RightPanel = ({ selectedSection, athleteId }) => {
   const sectionContent = {
-    "Medical Test Reports": <MedicalTestReports />,
-    "Biological Passport Records": <BiologicalPassportRecords />,
-    "Access to Social Media": <AccessToSocialMedia />,
-    "Financial Transactions": <FinancialTransactions />,
-    "Travel History": <TravelHistory />,
+    "Medical Test Reports": <MedicalTestReports athleteId={athleteId}/>,
+    "Biological Passport Records": <BiologicalPassportRecords athleteId={athleteId}/>,
+    "Access to Social Media": <AccessToSocialMedia athleteId={athleteId}/>,
+    "Financial Transactions": <FinancialTransactions athleteId={athleteId}/>,
+    "Travel History": <TravelHistory athleteId={athleteId}/>,
   };
 
   return (

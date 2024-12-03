@@ -87,7 +87,7 @@ const InvestigatorDashboard = () => {
                   {/* View Details Button */}
                   <div className="mt-1 flex justify-center">
                     <Link
-                      to={`/athlete-details/${athlete.id}`}
+                      to={`/athlete-details/${athlete._id}`}
                       className="text-indigo-600 hover:text-indigo-800 font-medium text-lg transition-all duration-300 transform hover:scale-105"
                     >
                       View Details

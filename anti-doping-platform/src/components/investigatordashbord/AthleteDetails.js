@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for routing
+import { Link, useParams } from 'react-router-dom'; // Import Link for routing
 import RightPanel from './RightPanel'; // Import RightPanel component
 
 const AthleteDetails = () => {
   const [selectedSection, setSelectedSection] = useState('Medical Test Reports'); // Default to a valid section
+  const params = useParams();
+
+  // console.log(params.athleteId)
 
   return (
     <div style={containerStyle}>
@@ -46,7 +49,7 @@ const AthleteDetails = () => {
 
       {/* Right Panel */}
       <div style={rightPanelStyle}>
-        <RightPanel selectedSection={selectedSection} />
+        <RightPanel selectedSection={selectedSection} athleteId={params.athleteId}/>
       </div>
     </div>
   );

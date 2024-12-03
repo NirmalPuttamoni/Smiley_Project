@@ -1,19 +1,38 @@
-import React from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'; // For pie and bar charts
 
-const MedicalTestReports = () => {
-  // Sample data for visualization
-  const sampleDataPie = [
-    { name: 'Substance Detected', value: 40 },
-    { name: 'No Substance Detected', value: 60 },
-  ];
+const MedicalTestReports = ({athleteId}) => {
+  const [athleteDetails, setAthleteDetails] = useState({});
 
-  const sampleDataBar = [
-    { name: 'Test 1', substance: 45 },
-    { name: 'Test 2', substance: 60 },
-    { name: 'Test 3', substance: 30 },
-    { name: 'Test 4', substance: 80 },
-  ];
+  const getData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", {athleteId: athleteId});
+      console.log("---------------------",response);
+      setAthleteDetails(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+  // console.log(athleteDetails)
+  // Sample data for visualization
+  // const sampleDataPie = [
+  //   { name: 'Substance Detected', value: 40 },
+  //   { name: 'No Substance Detected', value: 60 },
+  // ];
+  const pieChartData = athleteDetails?.PieChartData;
+  console.log(pieChartData)
+  // const sampleDataBar = [
+  //   { name: 'Test 1', substance: 45 },
+  //   { name: 'Test 2', substance: 60 },
+  //   { name: 'Test 3', substance: 30 },
+  //   { name: 'Test 4', substance: 80 },
+  // ];
+  const barChartData = athleteDetails?.BarChartData;
 
   const COLORS = ['#4CAF50', '#FF5722'];  // Using green and red colors
 
@@ -67,10 +86,10 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>1. Sample Identification</h4>
           <ul style={listStyle}>
-            <li><strong>Sample Code/ID:</strong> Unique anonymized code to maintain confidentiality and traceability.</li>
-            <li><strong>Type of Sample:</strong> Urine, blood, or other biological materials.</li>
-            <li><strong>Sample Collection Date & Time:</strong> When the sample was collected.</li>
-            <li><strong>Testing Authority:</strong> NADA, WADA, or sports federation.</li>
+            <li><strong>Sample Code/ID:</strong>{athleteDetails?.SampleCodeID}</li>
+            <li><strong>Type of Sample:</strong> {athleteDetails?.TypeOfSample}</li>
+            <li><strong>Sample Collection Date & Time:</strong> {athleteDetails?.SampleCollectionDateTime}</li>
+            <li><strong>Testing Authority:</strong> {athleteDetails?.TestingAuthority}</li>
           </ul>
         </div>
 
@@ -82,8 +101,8 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>2. Athlete Information</h4>
           <ul style={listStyle}>
-            <li><strong>Demographics:</strong> Gender, age, sport, and event details.</li>
-            <li><strong>Therapeutic Use Exemption (TUE):</strong> Any approved exemption for using prohibited substances for medical reasons.</li>
+            <li><strong>Demographics:</strong> {athleteDetails?.Demographics}</li>
+            <li><strong>Therapeutic Use Exemption (TUE):</strong>{athleteDetails?.TherapeuticUseExemption}</li>
           </ul>
         </div>
 
@@ -95,10 +114,10 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>3. Laboratory Analysis</h4>
           <ul style={listStyle}>
-            <li><strong>Date of Receipt:</strong> When the sample was received at the laboratory.</li>
-            <li><strong>Testing Date:</strong> The date the analysis was conducted.</li>
-            <li><strong>Analysis Methods:</strong> Techniques used: GC-MS, LC-MS/MS, IRMS.</li>
-            <li><strong>Tested Parameters:</strong> Screening for prohibited substances and endogenous substances like testosterone/epitestosterone ratio.</li>
+            <li><strong>Date of Receipt:</strong>{athleteDetails?.DateOfReceipt}</li>
+            <li><strong>Testing Date:</strong>{athleteDetails?.TestingDate}</li>
+            <li><strong>Analysis Methods:</strong>{athleteDetails?.AnalysisMethods}</li>
+            <li><strong>Tested Parameters:</strong>{athleteDetails?.TestedParameters}</li>
           </ul>
         </div>
       </div>
@@ -116,16 +135,16 @@ const MedicalTestReports = () => {
             The results of the test are summarized below. A pie chart shows the proportion of substances detected vs. substances not detected.
           </p>
           <div style={{ width: '100%', height: '300px', marginTop: '20px' }}>
-            <PieChart width={300} height={300}>
+            <PieChart width={250} height={300}>
               <Pie
-                data={sampleDataPie}
+                data={pieChartData}
                 dataKey="value"
                 nameKey="name"
-                outerRadius={120}
+                outerRadius={90}
                 fill="#8884d8"
                 label
               >
-                {sampleDataPie.map((entry, index) => (
+                {pieChartData?.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
 
@@ -154,9 +173,9 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>6. Interpretations and Observations</h4>
           <ul style={listStyle}>
-            <li><strong>Endogenous vs. Exogenous:</strong> Differentiation between naturally occurring and externally introduced substances.</li>
-            <li><strong>Biological Passport Data:</strong> Comparison with athlete's longitudinal data to identify anomalies.</li>
-            <li><strong>Dilution or Tampering Indicators:</strong> Evidence of sample manipulation or abnormal pH/specific gravity values.</li>
+            <li><strong>Endogenous vs. Exogenous:</strong>{athleteDetails?.EndogenousVsExogenous}</li>
+            <li><strong>Biological Passport Data:</strong> {athleteDetails?.BiologicalPassportData}</li>
+            <li><strong>Dilution or Tampering Indicators:</strong>{athleteDetails?.DilutionOrTamperingIndicators}</li>
           </ul>
         </div>
       </div>
@@ -171,8 +190,8 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>7. Recommendations</h4>
           <ul style={listStyle}>
-            <li><strong>Follow-Up Actions:</strong> Suggestions for additional testing or further investigation.</li>
-            <li><strong>Compliance with TUE:</strong> Whether detected substances align with approved exemptions.</li>
+            <li><strong>Follow-Up Actions:</strong> {athleteDetails?.FollowUpActions}</li>
+            <li><strong>Compliance with TUE:</strong> {athleteDetails?.ComplianceWithTUE}</li>
           </ul>
         </div>
 
@@ -184,10 +203,10 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>8. Compliance and Authentication</h4>
           <ul style={listStyle}>
-            <li><strong>Accreditation:</strong> Certification of compliance with ISO standards and WADA protocols.</li>
-            <li><strong>Chain of Custody:</strong> Ensures the sample was securely handled.</li>
-            <li><strong>Authorized Signatures:</strong> Validation by laboratory personnel.</li>
-            <li><strong>WADA Code Compliance:</strong> Confirmation of adherence to anti-doping rules.</li>
+            <li><strong>Accreditation:</strong>{athleteDetails?.Accreditation}</li>
+            <li><strong>Chain of Custody:</strong>{athleteDetails?.ChainOfCustody}</li>
+            <li><strong>Authorized Signatures:</strong>{athleteDetails?.AuthorizedSignatures}</li>
+            <li><strong>WADA Code Compliance:</strong>{athleteDetails?.WADA_Code_Compliance}</li>
           </ul>
         </div>
 
@@ -199,9 +218,9 @@ const MedicalTestReports = () => {
         >
           <h4 style={sectionTitleStyle}>9. Additional Technical Data</h4>
           <ul style={listStyle}>
-            <li><strong>Test Protocols:</strong> Step-by-step documentation of how the tests were conducted.</li>
-            <li><strong>Statistical Uncertainty:</strong> Margin of error or confidence intervals.</li>
-            <li><strong>Auxiliary Findings:</strong> Detection of other non-prohibited substances.</li>
+            <li><strong>Test Protocols:</strong>{athleteDetails?.TestProtocols}</li>
+            <li><strong>Statistical Uncertainty:</strong> {athleteDetails?.StatisticalUncertainty}</li>
+            <li><strong>Auxiliary Findings:</strong>{athleteDetails?.AuxiliaryFindings}</li>
           </ul>
         </div>
       </div>
@@ -210,13 +229,13 @@ const MedicalTestReports = () => {
       <div style={cardGridStyle}>
         <div
           className="card"
-          style={cardStyle}
+          style={{ ...cardStyle, width: "100%" }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <h4 style={sectionTitleStyle}>Substance Detection Over Time</h4>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={sampleDataBar}>
+            <BarChart data={barChartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
