@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 const InvestigatorDashboard = () => {
   const [athletesData, setAthletesData] = useState([]);
 
+  const [investigatorName, setInvestigatorName] = useState("");
+
   const getData = async () => {
     try {
       const response = await axios.get("http://localhost:8080/athletes/get-all-athletes");
@@ -17,6 +19,7 @@ const InvestigatorDashboard = () => {
 
   useEffect(() => {
     getData();
+    setInvestigatorName(JSON.parse(sessionStorage.getItem('userData')));
   }, []);
 
   return (
@@ -40,7 +43,7 @@ const InvestigatorDashboard = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="text-white font-medium text-sm">John Doe</span>
+          <span className="text-white font-medium text-sm">{investigatorName.name}</span>
         </div>
       </nav>
       {/* Main Content */}

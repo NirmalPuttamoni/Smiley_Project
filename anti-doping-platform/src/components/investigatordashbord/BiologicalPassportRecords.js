@@ -30,7 +30,7 @@ const BiologicalPassportRecords = ({athleteId}) => {
   //   { date: '2024-06-01', value: 0.91 },
   // ];
   
-  const sampleDataLine = athleteDetails?.sampleDataLine;
+  const sampleDataLine = athleteDetails?.SampleDataLine;
 
   // State to handle hover effects
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -70,11 +70,11 @@ const BiologicalPassportRecords = ({athleteId}) => {
         >
           <h4 style={sectionTitleStyle}>1. Athlete Information</h4>
           <ul style={listStyle}>
-            <li><strong>Full Name:</strong>{athleteDetails?.Full_Name}</li>
+            <li><strong>Full Name:</strong>{athleteDetails?.FullName}</li>
             <li><strong>Gender:</strong>{athleteDetails?.Gender}</li>
             <li><strong>Sport:</strong>{athleteDetails?.Sport}</li>
-            <li><strong>Date of Birth:</strong>{athleteDetails?.Date_of_Birth}</li>
-            <li><strong>Unique Athlete ID:</strong>{athleteDetails?.Unique_Athlete_ID}</li>
+            <li><strong>Date of Birth:</strong>{athleteDetails?.DateOfBirth}</li>
+            <li><strong>Unique Athlete ID:</strong>{athleteDetails?.UniqueAthleteID}</li>
           </ul>
         </div>
 
@@ -86,10 +86,10 @@ const BiologicalPassportRecords = ({athleteId}) => {
         >
           <h4 style={sectionTitleStyle}>2. Data Collected</h4>
           <ul style={listStyle}>
-            <li><strong>Parameters Monitored:</strong>{athleteDetails?.Parameters_Monitored}</li>
-            <li><strong>Collection Method:</strong>{athleteDetails?.Collection_Method}</li>
-            <li><strong>Collection Frequency:</strong>{athleteDetails?.Collection_Frequency}</li>
-            <li><strong>Medical Professional:</strong>{athleteDetails?.Medical_Professional}</li>
+            <li><strong>Parameters Monitored:</strong>{athleteDetails?.ParametersMonitored}</li>
+            <li><strong>Collection Method:</strong>{athleteDetails?.CollectionMethod}</li>
+            <li><strong>Collection Frequency:</strong>{athleteDetails?.CollectionFrequency}</li>
+            <li><strong>Medical Professional:</strong>{athleteDetails?.MedicalProfessional}</li>
           </ul>
         </div>
 
@@ -101,11 +101,11 @@ const BiologicalPassportRecords = ({athleteId}) => {
         >
           <h4 style={sectionTitleStyle}>3. Data Analysis</h4>
           <ul style={listStyle}>
-            <li><strong>Testing Methods:</strong> {athleteDetails?.Testing_Methods}</li>
-            <li><strong>Threshold Levels:</strong> {Object.entries(athleteDetails?.Threshold_Levels || {}).map(([key, value]) => (
+            <li><strong>Testing Methods:</strong> {athleteDetails?.TestingMethods}</li>
+            <li><strong>Threshold Levels:</strong> {Object.entries(athleteDetails?.ThresholdLevels || {}).map(([key, value]) => (
                 <li key={key}>{key}: {value}</li>
             ))}</li>
-            <li><strong>Alerts & Flags:</strong>{athleteDetails?.Alerts_Flags}</li>
+            <li><strong>Alerts & Flags:</strong>{athleteDetails?.AlertsFlags}</li>
           </ul>
         </div>
       </div>
@@ -144,9 +144,9 @@ const BiologicalPassportRecords = ({athleteId}) => {
         >
           <h4 style={sectionTitleStyle}>5. Alerts and Notifications</h4>
           <ul style={listStyle}>
-            <li><strong>Threshold Violations:</strong> {athleteDetails?.Threshold_Violations}</li>
-            <li><strong>Potential Doping:</strong> {athleteDetails?.Potential_Doping}</li>
-            <li><strong>Regulatory Compliance:</strong> {athleteDetails?.Regulatory_Compliance}</li>
+            <li><strong>Threshold Violations:</strong> {athleteDetails?.ThresholdViolations}</li>
+            <li><strong>Potential Doping:</strong> {athleteDetails?.PotentialDoping}</li>
+            <li><strong>Regulatory Compliance:</strong> {athleteDetails?.RegulatoryCompliance}</li>
           </ul>
         </div>
 
@@ -159,8 +159,8 @@ const BiologicalPassportRecords = ({athleteId}) => {
           <h4 style={sectionTitleStyle}>6. Compliance and Review</h4>
           <ul style={listStyle}>
             <li><strong>Verification:</strong> {athleteDetails?.Verification}</li>
-            <li><strong>Record Updates:</strong>{athleteDetails?.Record_Updates}</li>
-            <li><strong>Review Cycle:</strong>{athleteDetails?.Review_Cycle}</li>
+            <li><strong>Record Updates:</strong>{athleteDetails?.RecordUpdates}</li>
+            <li><strong>Review Cycle:</strong>{athleteDetails?.ReviewCycle}</li>
           </ul>
         </div>
       </div>

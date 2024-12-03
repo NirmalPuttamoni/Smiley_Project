@@ -29,7 +29,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:8080/users/signin", values);
       
       const userRole = response.data.role;
-
+      sessionStorage.setItem('userData', JSON.stringify(response.data));
       if (userRole === "Whistleblower") {
         navigate("/report");
       } else if (userRole === "Investigator") {

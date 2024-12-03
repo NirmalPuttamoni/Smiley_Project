@@ -33,9 +33,6 @@ const Signup = ({ onLogin }) => {
       .catch((err) => {
         console.log(err);
       })
-
-    console.log(data);
-
   };
 
   return (
@@ -120,7 +117,7 @@ const Signup = ({ onLogin }) => {
           />
 
           <div className="flex items-center gap-2 mb-4">
-            <input type="checkbox" />
+            {/* <input type="checkbox" /> */}
             {/* <span className="text-sm text-gray-600">
               Creating an account means you're okay with our{" "}
               <Link href="#" className="text-blue-600 underline">

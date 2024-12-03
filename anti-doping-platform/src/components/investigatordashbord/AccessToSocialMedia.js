@@ -13,7 +13,7 @@ const AccessToSocialMedia = ({ athleteId }) => {
   const getData = async () => {
     try {
       const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
-      setAthleteDetails(response?.data?.AccesstoSocialMedia);
+      setAthleteDetails(response?.data?.AccessToSocialMedia);
     } catch (error) {
       console.log(error);
     }

@@ -5,43 +5,43 @@ import axios from "axios";
 
 // const travelData = [
 //   {
-//     date: "2024-11-01",
-//     destination: "Vienna, Austria",
-//     purpose: "Competition",
-//     duration: "5 days",
-//     visaDetails: "Schengen Visa (Valid: 2024-01-01 to 2024-12-31)",
-//     ticketCost: "$450",
-//     accompanyingPersons: "Coach: John Doe",
-//     coordinates: [48.2082, 16.3738],
+//     Date: "2024-11-01",
+//     Destination: "Vienna, Austria",
+//     Purpose: "Competition",
+//     Duration: "5 days",
+//     VisaDetails: "Schengen Visa (Valid: 2024-01-01 to 2024-12-31)",
+//     TicketCost: "$450",
+//     AccompanyingPersons: "Coach: John Doe",
+//     Coordinates: [48.2082, 16.3738],
 //     flagged: false,
-//     riskScore: 3, // Scale of 1-10
-//     weather: "Mild (20°C)",
+//     RiskScore: 3, // Scale of 1-10
+//     Weather: "Mild (20°C)",
 //   },
 //   {
-//     date: "2024-10-15",
-//     destination: "Moscow, Russia",
-//     purpose: "Training Camp",
-//     duration: "10 days",
-//     visaDetails: "Russian Tourist Visa (Valid: 2024-06-01 to 2025-05-31)",
-//     ticketCost: "$600",
-//     accompanyingPersons: "Physiotherapist: Jane Smith",
-//     coordinates: [55.7558, 37.6173],
+//     Date: "2024-10-15",
+//     Destination: "Moscow, Russia",
+//     Purpose: "Training Camp",
+//     Duration: "10 days",
+//     VisaDetails: "Russian Tourist Visa (Valid: 2024-06-01 to 2025-05-31)",
+//     TicketCost: "$600",
+//     AccompanyingPersons: "Physiotherapist: Jane Smith",
+//     Coordinates: [55.7558, 37.6173],
 //     flagged: true,
-//     riskScore: 8,
-//     weather: "Cold (-5°C)",
+//     RiskScore: 8,
+//     Weather: "Cold (-5°C)",
 //   },
 //   {
-//     date: "2024-09-10",
-//     destination: "Nairobi, Kenya",
-//     purpose: "Altitude Training",
-//     duration: "14 days",
-//     visaDetails: "E-Visa (Valid: 2024-09-01 to 2024-12-31)",
-//     ticketCost: "$700",
-//     accompanyingPersons: "Training Partner: Alex Brown",
-//     coordinates: [-1.286389, 36.817223],
+//     Date: "2024-09-10",
+//     Destination: "Nairobi, Kenya",
+//     Purpose: "Altitude Training",
+//     Duration: "14 days",
+//     VisaDetails: "E-Visa (Valid: 2024-09-01 to 2024-12-31)",
+//     TicketCost: "$700",
+//     AccompanyingPersons: "Training Partner: Alex Brown",
+//     Coordinates: [-1.286389, 36.817223],
 //     flagged: false,
-//     riskScore: 6,
-//     weather: "Warm (25°C)",
+//     RiskScore: 6,
+//     Weather: "Warm (25°C)",
 //   },
 // ];
 
@@ -103,17 +103,17 @@ const TravelHistory = ({athleteId}) => {
                 <tr
                   key={index}
                   style={
-                    event.flagged ? styles.suspiciousRow : styles.normalRow
+                    event.Flagged ? styles.suspiciousRow : styles.normalRow
                   }
                   onClick={() => setSelectedRow(event)}
                 >
-                  <td style={styles.td}>{event.date}</td>
-                  <td style={styles.td}>{event.destination}</td>
-                  <td style={styles.td}>{event.purpose}</td>
-                  <td style={styles.td}>{event.duration}</td>
-                  <td style={styles.td}>{event.riskScore}</td>
-                  <td style={styles.td}>{event.weather}</td>
-                  <td style={styles.td}>{event.flagged ? "Yes" : "No"}</td>
+                  <td style={styles.td}>{event.Date}</td>
+                  <td style={styles.td}>{event.Destination}</td>
+                  <td style={styles.td}>{event.Purpose}</td>
+                  <td style={styles.td}>{event.Duration}</td>
+                  <td style={styles.td}>{event.RiskScore}</td>
+                  <td style={styles.td}>{event.Weather}</td>
+                  <td style={styles.td}>{event.Flagged ? "Yes" : "No"}</td>
                 </tr>
               ))}
             </tbody>
@@ -132,25 +132,25 @@ const TravelHistory = ({athleteId}) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {travelData?.map((event, index) => (
-              <Marker key={index} position={event.coordinates}>
+              <Marker key={index} position={event?.Coordinates}>
                 <Popup>
-                  <strong>{event.destination}</strong>
+                  <strong>{event.Destination}</strong>
                   <br />
-                  Purpose: {event.purpose}
+                  Purpose: {event.Purpose}
                   <br />
-                  Duration: {event.duration}
+                  Duration: {event.Duration}
                   <br />
-                  Risk Score: {event.riskScore}
+                  Risk Score: {event.RiskScore}
                   <br />
-                  Weather: {event.weather}
+                  Weather: {event.Weather}
                 </Popup>
               </Marker>
             ))}
             {travelData?.map((event, index) => (
               <Circle
                 key={index}
-                center={event.coordinates}
-                radius={event.riskScore * 10000}
+                center={event?.Coordinates}
+                radius={event?.RiskScore * 10000}
                 pathOptions={{ color: event.flagged ? "red" : "blue" }}
               />
             ))}
@@ -161,15 +161,15 @@ const TravelHistory = ({athleteId}) => {
         {selectedRow && (
           <section style={styles.detailSection}>
             <h2 style={styles.sectionTitle}>Event Details</h2>
-            <p><strong>Date:</strong> {selectedRow.date}</p>
-            <p><strong>Destination:</strong> {selectedRow.destination}</p>
-            <p><strong>Purpose:</strong> {selectedRow.purpose}</p>
-            <p><strong>Duration:</strong> {selectedRow.duration}</p>
-            <p><strong>Visa Details:</strong> {selectedRow.visaDetails}</p>
-            <p><strong>Ticket Cost:</strong> {selectedRow.ticketCost}</p>
-            <p><strong>Accompanying Persons:</strong> {selectedRow.accompanyingPersons}</p>
-            <p><strong>Weather:</strong> {selectedRow.weather}</p>
-            <p><strong>Risk Score:</strong> {selectedRow.riskScore}</p>
+            <p><strong>Date:</strong> {selectedRow.Date}</p>
+            <p><strong>Destination:</strong> {selectedRow.Destination}</p>
+            <p><strong>Purpose:</strong> {selectedRow.Purpose}</p>
+            <p><strong>Duration:</strong> {selectedRow.Duration}</p>
+            <p><strong>Visa Details:</strong> {selectedRow.VisaDetails}</p>
+            <p><strong>Ticket Cost:</strong> {selectedRow.TicketCost}</p>
+            <p><strong>Accompanying Persons:</strong> {selectedRow.AccompanyingPersons}</p>
+            <p><strong>Weather:</strong> {selectedRow.Weather}</p>
+            <p><strong>Risk Score:</strong> {selectedRow.RiskScore}</p>
           </section>
         )}
       </main>
