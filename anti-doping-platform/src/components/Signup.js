@@ -11,16 +11,12 @@ const Signup = ({ onLogin }) => {
     password: "",
     role: "",
   });
-    const navigate = useNavigate(); // React Router's hook for navigation
-
-
-  console.log(fullName)
-  console.log(data)
+  const navigate = useNavigate();
 
   const handleCreateAccount = async () => {
 
     await axios.post("http://localhost:8080/users/signup", data)
-    .then(()=>{
+      .then(() => {
         console.log("uploaded user");
         if (userRole === "Whistleblower") {
           navigate("/report"); // Redirect to the ReportForm page
@@ -33,30 +29,14 @@ const Signup = ({ onLogin }) => {
           navigate("/athlete-dashboard"); // Redirect to Athlete's Dashboard (Athlete page)
         }
         // Navigate('$(PATH)/login');
-    })
-    .catch((err)=>{
+      })
+      .catch((err) => {
         console.log(err);
-    })
+      })
 
     console.log(data);
-    // Navigate based on user role
-    // if (userRole === "Whistleblower") {
-    //   navigate("/report"); // Redirect to the ReportForm page
-    // } else if (userRole === "Investigator") {
-    //   navigate("/investigator-dashboard"); // Redirect to the Investigator Dashboard
-    // } else {
-    //   if (onLogin) {
-    //     onLogin(userRole); // Pass the role to parent if needed
-    //   }
-    //   navigate("/athlete-dashboard"); // Redirect to Athlete's Dashboard (Athlete page)
-    // }
-  };
 
-    // const handleInputChange = (e) => {
-    //   const { name, value } = e.target;
-    //   setFullName((prev) => ({ ...prev, [name]: value }));
-    //   setData((prev) => ({ ...prev, name: ${fullName.firstName} ${fullName.lastName} }));
-    // };
+  };
 
   return (
     <div className="flex h-screen">
@@ -81,9 +61,8 @@ const Signup = ({ onLogin }) => {
                 setUserRole(role);
                 setData((prev) => ({ ...prev, role: role }));
               }}
-              className={`px-4 py-2 text-sm font-medium border ${
-                userRole === role ? "bg-blue-500 text-white" : "bg-gray-200"
-              } rounded-md`}
+              className={`px-4 py-2 text-sm font-medium border ${userRole === role ? "bg-blue-500 text-white" : "bg-gray-200"
+                } rounded-md`}
             >
               {role}
             </button>

@@ -8,8 +8,7 @@ const MedicalTestReports = ({athleteId}) => {
   const getData = async () => {
     try {
       const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", {athleteId: athleteId});
-      console.log("---------------------",response);
-      setAthleteDetails(response.data);
+      setAthleteDetails(response?.data?.MedicalTestReports);
     } catch (error) {
       console.log(error);
     }
@@ -18,20 +17,22 @@ const MedicalTestReports = ({athleteId}) => {
   useEffect(() => {
     getData();
   }, []);
+
   // console.log(athleteDetails)
   // Sample data for visualization
   // const sampleDataPie = [
   //   { name: 'Substance Detected', value: 40 },
   //   { name: 'No Substance Detected', value: 60 },
   // ];
-  const pieChartData = athleteDetails?.PieChartData;
-  console.log(pieChartData)
   // const sampleDataBar = [
   //   { name: 'Test 1', substance: 45 },
   //   { name: 'Test 2', substance: 60 },
   //   { name: 'Test 3', substance: 30 },
   //   { name: 'Test 4', substance: 80 },
   // ];
+
+  const pieChartData = athleteDetails?.PieChartData;
+ 
   const barChartData = athleteDetails?.BarChartData;
 
   const COLORS = ['#4CAF50', '#FF5722'];  // Using green and red colors

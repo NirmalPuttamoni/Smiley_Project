@@ -16,13 +16,12 @@ const getAllAthletes = async (req, res) => {
 
 const getAthleteDetailsByAthleteId = async (req, res) => {
   const {athleteId} = req.body; 
-  // console.log("----------------",athleteId);
   try {
     const athleteDetails = await AthleteDetails.findOne({ athlete_id: athleteId });
     if (!athleteDetails) {
       return res.status(404).json({ message: 'Athlete not found' });
     }
-    console.log("----------------",athleteDetails);
+    console.log("athleteDetails: ",athleteDetails);
       return res.status(200).json(athleteDetails);
   } catch (error) {
       console.error('Error fetching athlete details:', error);

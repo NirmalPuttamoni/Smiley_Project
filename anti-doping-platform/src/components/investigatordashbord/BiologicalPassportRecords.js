@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // For line chart
 
-const BiologicalPassportRecords = () => {
+const BiologicalPassportRecords = ({athleteId}) => {
+
+  const [athleteDetails, setAthleteDetails] = useState({});
+  
+  const getData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", {athleteId: athleteId});
+      setAthleteDetails(response?.data?.BiologicalPassportRecords);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(athleteDetails)
+  useEffect(() => {
+    getData();
+  }, []);
+
+
   // Sample data for visualization
-  const sampleDataLine = [
-    { date: '2024-01-01', value: 0.8 },
-    { date: '2024-02-01', value: 0.85 },
-    { date: '2024-03-01', value: 0.9 },
-    { date: '2024-04-01', value: 0.88 },
-    { date: '2024-05-01', value: 0.92 },
-    { date: '2024-06-01', value: 0.91 },
-  ];
+  // const sampleDataLine = [
+  //   { date: '2024-01-01', value: 0.8 },
+  //   { date: '2024-02-01', value: 0.85 },
+  //   { date: '2024-03-01', value: 0.9 },
+  //   { date: '2024-04-01', value: 0.88 },
+  //   { date: '2024-05-01', value: 0.92 },
+  //   { date: '2024-06-01', value: 0.91 },
+  // ];
+  
+  const sampleDataLine = athleteDetails?.sampleDataLine;
 
   // State to handle hover effects
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -50,11 +70,11 @@ const BiologicalPassportRecords = () => {
         >
           <h4 style={sectionTitleStyle}>1. Athlete Information</h4>
           <ul style={listStyle}>
-            <li><strong>Full Name:</strong> Athlete's name</li>
-            <li><strong>Gender:</strong> Male/Female</li>
-            <li><strong>Sport:</strong> Sport the athlete competes in</li>
-            <li><strong>Date of Birth:</strong> Athlete's birth date</li>
-            <li><strong>Unique Athlete ID:</strong> Unique identifier</li>
+            <li><strong>Full Name:</strong>{athleteDetails?.Full_Name}</li>
+            <li><strong>Gender:</strong>{athleteDetails?.Gender}</li>
+            <li><strong>Sport:</strong>{athleteDetails?.Sport}</li>
+            <li><strong>Date of Birth:</strong>{athleteDetails?.Date_of_Birth}</li>
+            <li><strong>Unique Athlete ID:</strong>{athleteDetails?.Unique_Athlete_ID}</li>
           </ul>
         </div>
 
@@ -66,10 +86,10 @@ const BiologicalPassportRecords = () => {
         >
           <h4 style={sectionTitleStyle}>2. Data Collected</h4>
           <ul style={listStyle}>
-            <li><strong>Parameters Monitored:</strong> Hemoglobin, red blood cell count, testosterone, etc.</li>
-            <li><strong>Collection Method:</strong> Blood, urine, etc.</li>
-            <li><strong>Collection Frequency:</strong> Regular intervals (e.g., monthly, quarterly)</li>
-            <li><strong>Medical Professional:</strong> The authorized personnel who collect the data</li>
+            <li><strong>Parameters Monitored:</strong>{athleteDetails?.Parameters_Monitored}</li>
+            <li><strong>Collection Method:</strong>{athleteDetails?.Collection_Method}</li>
+            <li><strong>Collection Frequency:</strong>{athleteDetails?.Collection_Frequency}</li>
+            <li><strong>Medical Professional:</strong>{athleteDetails?.Medical_Professional}</li>
           </ul>
         </div>
 
@@ -81,9 +101,11 @@ const BiologicalPassportRecords = () => {
         >
           <h4 style={sectionTitleStyle}>3. Data Analysis</h4>
           <ul style={listStyle}>
-            <li><strong>Testing Methods:</strong> Analyzing levels of substances like testosterone/epitestosterone ratio.</li>
-            <li><strong>Threshold Levels:</strong> Defining normal ranges for biomarkers</li>
-            <li><strong>Alerts & Flags:</strong> Indications of irregularities or potential doping</li>
+            <li><strong>Testing Methods:</strong> {athleteDetails?.Testing_Methods}</li>
+            <li><strong>Threshold Levels:</strong> {Object.entries(athleteDetails?.Threshold_Levels || {}).map(([key, value]) => (
+                <li key={key}>{key}: {value}</li>
+            ))}</li>
+            <li><strong>Alerts & Flags:</strong>{athleteDetails?.Alerts_Flags}</li>
           </ul>
         </div>
       </div>
@@ -92,7 +114,7 @@ const BiologicalPassportRecords = () => {
       <div style={cardGridStyle}>
         <div
           className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card4' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
+          style={{ ...cardStyle, width:"100%", boxShadow: hoveredCard === 'card4' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
           onMouseEnter={() => handleMouseEnter('card4')}
           onMouseLeave={handleMouseLeave}
         >
@@ -116,29 +138,29 @@ const BiologicalPassportRecords = () => {
 
         <div
           className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card5' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
+          style={{ ...cardStyle,width:"40%" , boxShadow: hoveredCard === 'card5' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
           onMouseEnter={() => handleMouseEnter('card5')}
           onMouseLeave={handleMouseLeave}
         >
           <h4 style={sectionTitleStyle}>5. Alerts and Notifications</h4>
           <ul style={listStyle}>
-            <li><strong>Threshold Violations:</strong> Notification when biomarker values exceed predefined thresholds.</li>
-            <li><strong>Potential Doping:</strong> Alerts triggered when a suspicious trend is detected in the data.</li>
-            <li><strong>Regulatory Compliance:</strong> Ensuring compliance with WADA’s anti-doping regulations.</li>
+            <li><strong>Threshold Violations:</strong> {athleteDetails?.Threshold_Violations}</li>
+            <li><strong>Potential Doping:</strong> {athleteDetails?.Potential_Doping}</li>
+            <li><strong>Regulatory Compliance:</strong> {athleteDetails?.Regulatory_Compliance}</li>
           </ul>
         </div>
 
         <div
           className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card6' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
+          style={{ ...cardStyle, width:"40%",boxShadow: hoveredCard === 'card6' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
           onMouseEnter={() => handleMouseEnter('card6')}
           onMouseLeave={handleMouseLeave}
         >
           <h4 style={sectionTitleStyle}>6. Compliance and Review</h4>
           <ul style={listStyle}>
-            <li><strong>Verification:</strong> Cross-checking with external data (e.g., competition results, previous tests)</li>
-            <li><strong>Record Updates:</strong> Keeping the biological passport records up-to-date</li>
-            <li><strong>Review Cycle:</strong> Periodic reviews by WADA or the relevant authorities</li>
+            <li><strong>Verification:</strong> {athleteDetails?.Verification}</li>
+            <li><strong>Record Updates:</strong>{athleteDetails?.Record_Updates}</li>
+            <li><strong>Review Cycle:</strong>{athleteDetails?.Review_Cycle}</li>
           </ul>
         </div>
       </div>

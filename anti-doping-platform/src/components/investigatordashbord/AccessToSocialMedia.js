@@ -1,58 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button, Modal } from 'react-bootstrap';
 import { FaInstagram, FaTwitter, FaFacebook, FaLinkedin, FaYoutube } from 'react-icons/fa'; // Added new icons
 import { Line } from 'react-chartjs-2'; // Chart for graph representation
 import 'chart.js/auto'; // Chart.js dependency
+import axios from "axios";
 
-const AccessToSocialMedia = () => {
+const AccessToSocialMedia = ({ athleteId }) => {
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(null);
+
+  const [athleteDetails, setAthleteDetails] = useState({});
+
+  const getData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
+      setAthleteDetails(response?.data?.AccesstoSocialMedia);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(athleteDetails)
+  useEffect(() => {
+    getData();
+  }, []);
 
   const socialMediaAccounts = [
     {
       platform: 'Instagram',
-      handle: '@athlete_instagram',
+      handle: `${athleteDetails?.InstagramID}`,
       profilePic: 'https://via.placeholder.com/150',
-      followers: '1.2M',
-      engagementRate: '5.2%',
-      posts: 300,
-      link: 'https://instagram.com/athlete_instagram'
+      followers: `${athleteDetails?.Followers}`,
+      engagementRate: `${athleteDetails?.EngagementRate}`,
+      posts: `${athleteDetails?.Posts}`,
+      link: `https://instagram.com/${athleteDetails?.InstagramID?.replace('@', '')}`
     },
     {
       platform: 'Twitter',
-      handle: '@athlete_twitter',
-      profilePic: 'https://via.placeholder.com/150',
-      followers: '800K',
-      engagementRate: '3.8%',
-      posts: 250,
-      link: 'https://twitter.com/athlete_twitter'
+      handle: `${athleteDetails?.TwitterID}`,
+      profilePic: `${athleteDetails?.Unique_Athlete_ID}`,
+      followers: `${athleteDetails?.TwitterFollowers}`,
+      engagementRate: `${athleteDetails?.TwitterEngagementRate}`,
+      posts: `${athleteDetails?.TwitterPosts}`,
+      link: `https://twitter.com/${athleteDetails?.TwitterID?.replace('@', '')}`
     },
     {
       platform: 'Facebook',
-      handle: '@athlete_facebook',
-      profilePic: 'https://via.placeholder.com/150',
-      followers: '1M',
-      engagementRate: '4.5%',
-      posts: 350,
-      link: 'https://facebook.com/athlete_facebook'
+      handle: `${athleteDetails?.FacebookID}`,
+      profilePic: `${athleteDetails?.Unique_Athlete_ID}`,
+      followers: `${athleteDetails?.FacebookFollowers}`,
+      engagementRate: `${athleteDetails?.FacebookEngagementRate}`,
+      posts: `${athleteDetails?.FacebookPosts}`,
+      link: `https://facebook.com/${athleteDetails?.FacebookID}`
     },
     {
       platform: 'LinkedIn',
-      handle: '@athlete_linkedin',
-      profilePic: 'https://via.placeholder.com/150',
-      followers: '500K',
-      engagementRate: '2.5%',
-      posts: 180,
-      link: 'https://linkedin.com/in/athlete_linkedin'
+      handle: `${athleteDetails?.LinkedInID}`,
+      profilePic: `${athleteDetails?.Unique_Athlete_ID}`,
+      followers: `${athleteDetails?.LinkedInFollowers}`,
+      engagementRate: `${athleteDetails?.LinkedInEngagementRate}`,
+      posts: `${athleteDetails?.LinkedInPosts}`,
+      link: `https://linkedin.com/in/${athleteDetails?.LinkedInID?.replace('@', '')}`
     },
     {
       platform: 'YouTube',
-      handle: '@athlete_youtube',
-      profilePic: 'https://via.placeholder.com/150',
-      followers: '1.5M',
-      engagementRate: '6.1%',
-      posts: 100,
-      link: 'https://youtube.com/c/athlete_youtube'
+      handle: `${athleteDetails?.YouTubeID}`,
+      profilePic: `${athleteDetails?.Unique_Athlete_ID}`,
+      followers: `${athleteDetails?.YouTubeFollowers}`,
+      engagementRate: `${athleteDetails?.YouTubeEngagementRate}`,
+      posts: `${athleteDetails?.YouTubePosts}`,
+      link: `https://youtube.com/c/${athleteDetails?.YouTubeID?.replace('@', '')}`
     }
   ];
 

@@ -24,13 +24,7 @@ const AthleteDetails = () => {
               }}
               onClick={() => setSelectedSection(item)}
             >
-              {item === 'Biological Passport Records' ? (
-                <Link to="/biological-passport-records" style={{ textDecoration: 'none', color: 'inherit' }}>
-                  {item}
-                </Link>
-              ) : (
-                item
-              )}
+              {item}
             </li>
           ))}
         </ul>
@@ -49,7 +43,7 @@ const AthleteDetails = () => {
 
       {/* Right Panel */}
       <div style={rightPanelStyle}>
-        <RightPanel selectedSection={selectedSection} athleteId={params.athleteId}/>
+        <RightPanel selectedSection={selectedSection} athleteId={params.athleteId} />
       </div>
     </div>
   );

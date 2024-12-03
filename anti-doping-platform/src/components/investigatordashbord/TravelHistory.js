@@ -1,51 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
 
-const travelData = [
-  {
-    date: "2024-11-01",
-    destination: "Vienna, Austria",
-    purpose: "Competition",
-    duration: "5 days",
-    visaDetails: "Schengen Visa (Valid: 2024-01-01 to 2024-12-31)",
-    ticketCost: "$450",
-    accompanyingPersons: "Coach: John Doe",
-    coordinates: [48.2082, 16.3738],
-    flagged: false,
-    riskScore: 3, // Scale of 1-10
-    weather: "Mild (20°C)",
-  },
-  {
-    date: "2024-10-15",
-    destination: "Moscow, Russia",
-    purpose: "Training Camp",
-    duration: "10 days",
-    visaDetails: "Russian Tourist Visa (Valid: 2024-06-01 to 2025-05-31)",
-    ticketCost: "$600",
-    accompanyingPersons: "Physiotherapist: Jane Smith",
-    coordinates: [55.7558, 37.6173],
-    flagged: true,
-    riskScore: 8,
-    weather: "Cold (-5°C)",
-  },
-  {
-    date: "2024-09-10",
-    destination: "Nairobi, Kenya",
-    purpose: "Altitude Training",
-    duration: "14 days",
-    visaDetails: "E-Visa (Valid: 2024-09-01 to 2024-12-31)",
-    ticketCost: "$700",
-    accompanyingPersons: "Training Partner: Alex Brown",
-    coordinates: [-1.286389, 36.817223],
-    flagged: false,
-    riskScore: 6,
-    weather: "Warm (25°C)",
-  },
-];
+// const travelData = [
+//   {
+//     date: "2024-11-01",
+//     destination: "Vienna, Austria",
+//     purpose: "Competition",
+//     duration: "5 days",
+//     visaDetails: "Schengen Visa (Valid: 2024-01-01 to 2024-12-31)",
+//     ticketCost: "$450",
+//     accompanyingPersons: "Coach: John Doe",
+//     coordinates: [48.2082, 16.3738],
+//     flagged: false,
+//     riskScore: 3, // Scale of 1-10
+//     weather: "Mild (20°C)",
+//   },
+//   {
+//     date: "2024-10-15",
+//     destination: "Moscow, Russia",
+//     purpose: "Training Camp",
+//     duration: "10 days",
+//     visaDetails: "Russian Tourist Visa (Valid: 2024-06-01 to 2025-05-31)",
+//     ticketCost: "$600",
+//     accompanyingPersons: "Physiotherapist: Jane Smith",
+//     coordinates: [55.7558, 37.6173],
+//     flagged: true,
+//     riskScore: 8,
+//     weather: "Cold (-5°C)",
+//   },
+//   {
+//     date: "2024-09-10",
+//     destination: "Nairobi, Kenya",
+//     purpose: "Altitude Training",
+//     duration: "14 days",
+//     visaDetails: "E-Visa (Valid: 2024-09-01 to 2024-12-31)",
+//     ticketCost: "$700",
+//     accompanyingPersons: "Training Partner: Alex Brown",
+//     coordinates: [-1.286389, 36.817223],
+//     flagged: false,
+//     riskScore: 6,
+//     weather: "Warm (25°C)",
+//   },
+// ];
 
-const TravelHistory = () => {
+const TravelHistory = ({athleteId}) => {
   const [selectedRow, setSelectedRow] = useState(null);
+  const [travelData, setTravelData] = useState([]);
+
+  const getData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
+      setTravelData(response?.data?.TravelHistory);
+
+      console.log(response?.data?.TravelHistory)
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
 
   return (
     <div style={styles.pageContainer}>
@@ -81,7 +99,7 @@ const TravelHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {travelData.map((event, index) => (
+              {travelData?.map((event, index) => (
                 <tr
                   key={index}
                   style={
@@ -113,7 +131,7 @@ const TravelHistory = () => {
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {travelData.map((event, index) => (
+            {travelData?.map((event, index) => (
               <Marker key={index} position={event.coordinates}>
                 <Popup>
                   <strong>{event.destination}</strong>
@@ -128,7 +146,7 @@ const TravelHistory = () => {
                 </Popup>
               </Marker>
             ))}
-            {travelData.map((event, index) => (
+            {travelData?.map((event, index) => (
               <Circle
                 key={index}
                 center={event.coordinates}
