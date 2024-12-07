@@ -147,7 +147,7 @@ const AccessToSocialMedia = ({ athleteId }) => {
               <Button
                 variant="primary"
                 onClick={handleAnalyticsShow}
-                style={{ width: '100%', marginBottom: '10px', backgroundColor: '#007bff' }}
+                style={{ width: '100%', marginBottom: '10px', backgroundColor: '#203c5c' }}
               >
                 View Analytics
               </Button>
@@ -183,7 +183,7 @@ const AccessToSocialMedia = ({ athleteId }) => {
             <Button
               variant="primary"
               onClick={handleAnalyticsClose}
-              style={{ marginRight: '10px' }}
+              style={{ marginRight: '10px', backgroundColor: '#203c5c' }}
             >
               Download Report
             </Button>

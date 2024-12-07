@@ -35,17 +35,17 @@ const AthleteEducation = () => {
             </p>
             <ul className="list-none space-y-4">
               <li>
-                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                <button className="w-full px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] transition duration-200">
                   🎥 Watch Video on Doping Risks
                 </button>
               </li>
               <li>
-                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                <button className="w-full px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] transition duration-200">
                   📝 Take the Anti-Doping Quiz
                 </button>
               </li>
               <li>
-                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                <button className="w-full px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] transition duration-200">
                   📚 Case Study: Real-Life Anti-Doping Violation
                 </button>
               </li>
@@ -58,7 +58,7 @@ const AthleteEducation = () => {
             <p className="text-black mb-4">
               Stay updated on changes to the list of prohibited substances and Therapeutic Use Exemption procedures. Our system automatically keeps track of all regulatory shifts.
             </p>
-            <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+            <button className="w-full px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] transition duration-200">
               View Latest Regulatory Updates
             </button>
           </div>
@@ -66,7 +66,7 @@ const AthleteEducation = () => {
 
         {/* Contact Support */}
         <div className="mt-10 text-center">
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+          <button className="px-6 py-3 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] transition duration-200">
             Contact Support or Report Issues
           </button>
         </div>

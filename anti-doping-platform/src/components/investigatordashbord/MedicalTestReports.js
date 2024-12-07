@@ -1,283 +1,277 @@
 import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'; // For pie and bar charts
+import React, { useEffect, useState } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line } from 'recharts';
 
-const MedicalTestReports = ({athleteId}) => {
-  const [athleteDetails, setAthleteDetails] = useState({});
+// Sample data for visualizations (you can modify this based on real data)
+// const medicalTests = [
+//   {
+//     title: "Vital Signs",
+//     result: "120/80 mm Hg",
+//     threshold: "120/80 mm Hg",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Blood Test (Hemoglobin)",
+//     result: "14 g/dL",
+//     threshold: "Men: 13.8–17.2 g/dL, Women: 12.1–15.1 g/dL",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Urine Test (Protein)",
+//     result: "Negative",
+//     threshold: "<20 mg/dL",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Cardiovascular Health (ECG)",
+//     result: "Normal",
+//     threshold: "Sinus rhythm",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Respiratory Function (FEV1)",
+//     result: "85% of predicted",
+//     threshold: ">80% of predicted value",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Musculoskeletal Assessments",
+//     result: "Normal strength",
+//     threshold: "Balanced and proportionate",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Nutritional Deficiencies (Iron)",
+//     result: "100 µg/dL",
+//     threshold: "Men: 80–180 µg/dL, Women: 60–160 µg/dL",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Hormonal Profiling (Testosterone)",
+//     result: "500 ng/dL",
+//     threshold: "Men: 300–1,000 ng/dL, Women: 15–70 ng/dL",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Body Composition (BMI)",
+//     result: "22.5",
+//     threshold: "18.5–24.9 (Normal)",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Hydration Status (Sodium)",
+//     result: "140 mmol/L",
+//     threshold: "135–145 mmol/L",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Blood Glucose (Fasting)",
+//     result: "90 mg/dL",
+//     threshold: "70–100 mg/dL",
+//     status: "Normal",
+//   },
+//   {
+//     title: "Lipid Profile (Total Cholesterol)",
+//     result: "180 mg/dL",
+//     threshold: "<200 mg/dL",
+//     status: "Normal",
+//   },
+// ];
+
+const App = ({athleteId}) => {
+  // Preparing data for charts
+
+  const [medicalTests, setMedicalTests] = useState([]);
 
   const getData = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", {athleteId: athleteId});
-      setAthleteDetails(response?.data?.MedicalTestReports);
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
+      setMedicalTests(response?.data?.MedicalTestReports);
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getData();
   }, []);
+  // console.log(medicalTests)
 
-  // console.log(athleteDetails)
-  // Sample data for visualization
-  // const sampleDataPie = [
-  //   { name: 'Substance Detected', value: 40 },
-  //   { name: 'No Substance Detected', value: 60 },
-  // ];
-  // const sampleDataBar = [
-  //   { name: 'Test 1', substance: 45 },
-  //   { name: 'Test 2', substance: 60 },
-  //   { name: 'Test 3', substance: 30 },
-  //   { name: 'Test 4', substance: 80 },
-  // ];
+  const statusCount = medicalTests?.reduce(
+    (acc, test) => {
+      acc[test.status === "Normal" ? "normal" : "abnormal"]++;
+      return acc;
+    },
+    { normal: 0, abnormal: 0 }
+  );
 
-  const pieChartData = athleteDetails?.PieChartData;
- 
-  const barChartData = athleteDetails?.BarChartData;
-
-  const COLORS = ['#4CAF50', '#FF5722'];  // Using green and red colors
-
-  const cardStyle = {
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
-    width: '30%',
-    padding: '20px',
-    cursor: 'pointer',
-    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', // Hover transition
-  };
-
-  const cardHoverStyle = {
-    transform: 'scale(1.05)', // Slight scale on hover
-    boxShadow: '0 12px 24px rgba(0, 0, 0, 0.2)', // Increased shadow on hover
-  };
-
-  const handleMouseEnter = (e) => {
-    e.currentTarget.style.transform = 'scale(1.05)';
-    e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
-  };
-
-  const handleMouseLeave = (e) => {
-    e.currentTarget.style.transform = 'scale(1)';
-    e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.1)';
-  };
+  const testResults = medicalTests?.map(test => ({
+    name: test.title,
+    result: parseFloat(test.result) || 0,
+  }));
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#f4f7f6', borderRadius: '10px' }}>
-      <h4
-        style={{
-          textAlign: 'center',
-          marginBottom: '30px',
-          fontSize: '2.5rem',
-          fontWeight: '600',
-          color: '#333',
-          textTransform: 'uppercase',
-        }}
-      >
-        Medical Test Reports
-      </h4>
+    <div style={styles.container}>
+      <h1 style={styles.header}>Athlete Medical Test Report</h1>
 
-      {/* Card Grid - 3 cards per row */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>1. Sample Identification</h4>
-          <ul style={listStyle}>
-            <li><strong>Sample Code/ID:</strong>{athleteDetails?.SampleCodeID}</li>
-            <li><strong>Type of Sample:</strong> {athleteDetails?.TypeOfSample}</li>
-            <li><strong>Sample Collection Date & Time:</strong> {athleteDetails?.SampleCollectionDateTime}</li>
-            <li><strong>Testing Authority:</strong> {athleteDetails?.TestingAuthority}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>2. Athlete Information</h4>
-          <ul style={listStyle}>
-            <li><strong>Demographics:</strong> {athleteDetails?.Demographics}</li>
-            <li><strong>Therapeutic Use Exemption (TUE):</strong>{athleteDetails?.TherapeuticUseExemption}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>3. Laboratory Analysis</h4>
-          <ul style={listStyle}>
-            <li><strong>Date of Receipt:</strong>{athleteDetails?.DateOfReceipt}</li>
-            <li><strong>Testing Date:</strong>{athleteDetails?.TestingDate}</li>
-            <li><strong>Analysis Methods:</strong>{athleteDetails?.AnalysisMethods}</li>
-            <li><strong>Tested Parameters:</strong>{athleteDetails?.TestedParameters}</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Card Grid - 3 cards per row */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>4. Results Summary</h4>
-          <p style={paragraphStyle}>
-            The results of the test are summarized below. A pie chart shows the proportion of substances detected vs. substances not detected.
-          </p>
-          <div style={{ width: '100%', height: '300px', marginTop: '20px' }}>
-            <PieChart width={250} height={300}>
-              <Pie
-                data={pieChartData}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={90}
-                fill="#8884d8"
-                label
-              >
-                {pieChartData?.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </div>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>5. Confirmatory Analysis</h4>
-          <p style={paragraphStyle}>Sample B testing and verification methods to confirm initial results.</p>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>6. Interpretations and Observations</h4>
-          <ul style={listStyle}>
-            <li><strong>Endogenous vs. Exogenous:</strong>{athleteDetails?.EndogenousVsExogenous}</li>
-            <li><strong>Biological Passport Data:</strong> {athleteDetails?.BiologicalPassportData}</li>
-            <li><strong>Dilution or Tampering Indicators:</strong>{athleteDetails?.DilutionOrTamperingIndicators}</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Card Grid - 3 cards per row */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>7. Recommendations</h4>
-          <ul style={listStyle}>
-            <li><strong>Follow-Up Actions:</strong> {athleteDetails?.FollowUpActions}</li>
-            <li><strong>Compliance with TUE:</strong> {athleteDetails?.ComplianceWithTUE}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>8. Compliance and Authentication</h4>
-          <ul style={listStyle}>
-            <li><strong>Accreditation:</strong>{athleteDetails?.Accreditation}</li>
-            <li><strong>Chain of Custody:</strong>{athleteDetails?.ChainOfCustody}</li>
-            <li><strong>Authorized Signatures:</strong>{athleteDetails?.AuthorizedSignatures}</li>
-            <li><strong>WADA Code Compliance:</strong>{athleteDetails?.WADA_Code_Compliance}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={cardStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>9. Additional Technical Data</h4>
-          <ul style={listStyle}>
-            <li><strong>Test Protocols:</strong>{athleteDetails?.TestProtocols}</li>
-            <li><strong>Statistical Uncertainty:</strong> {athleteDetails?.StatisticalUncertainty}</li>
-            <li><strong>Auxiliary Findings:</strong>{athleteDetails?.AuxiliaryFindings}</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Bar Chart for Substance Detection Over Time */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={{ ...cardStyle, width: "100%" }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>Substance Detection Over Time</h4>
+      <div style={styles.visualizationsContainer}>
+        {/* Visualization: Bar Chart */}
+        <div style={styles.chartContainer}>
+          <h2>Test Result Bar Chart</h2>
+          <p>This chart represents the results of various medical tests, showing their numerical values. Each bar corresponds to a different test.</p>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barChartData}>
+            <BarChart data={testResults}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="substance" fill="#8884d8" />
+              <Bar dataKey="result" fill="#A5B9C2" />
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        <div style={styles.chartContainer}>
+          <h2>Status Distribution Pie Chart</h2>
+          <p>
+            This pie chart represents the distribution of test results. It visualizes the proportion of tests that are
+            classified as <strong>Normal</strong> vs <strong>Abnormal</strong>. The pie chart gives a quick overview of the
+            test outcomes based on the status of each medical test.
+          </p>
+          <ResponsiveContainer width="100%" height={350}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Normal', value: statusCount.normal },
+                  { name: 'Abnormal', value: statusCount.abnormal },
+                ]}
+                outerRadius={120}
+                fill="#203c5c"
+                dataKey="value"
+              >
+                <Cell fill="#A5B9C2" />
+                <Cell fill="#E5EAF1" />
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Visualization: Line Chart for Test Results Over Time */}
+        <div style={styles.chartContainer}>
+          <h2>Test Results Over Time (Sample Line Chart)</h2>
+          <p>This line chart visualizes the results of tests over time or across various tests. It helps to track the progression of test results.</p>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={testResults}>
+              <Line type="monotone" dataKey="result" stroke="#A5B9C2" />
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Medical Test Cards */}
+      <div style={styles.cardContainer}>
+        {medicalTests?.map((test, index) => (
+          <div key={index} style={styles.card}>
+            <h2 style={styles.cardTitle}>{test.title}</h2>
+            <table style={styles.table}>
+              <tbody>
+                <tr>
+                  <td style={styles.tableCell}><strong>Result:</strong></td>
+                  <td style={styles.tableCell}>{test.result}</td>
+                </tr>
+                <tr>
+                  <td style={styles.tableCell}><strong>Threshold Limit:</strong></td>
+                  <td style={styles.tableCell}>{test.threshold}</td>
+                </tr>
+                <tr>
+                  <td style={styles.tableCell}><strong>Status:</strong></td>
+                  <td style={{ ...styles.tableCell, color: test.status === "Normal" ? "#27ae60" : "#e74c3c" }}>
+                    {test.status}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-// Style for card grid layout
-const cardGridStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
-  gap: '20px',
-  marginBottom: '40px',
+const styles = {
+  container: {
+    backgroundColor: "#f4f4f4",
+    padding: "40px",
+    fontFamily: "Arial, sans-serif",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",  // Center content
+  },
+  header: {
+    textAlign: "center",
+    color: "#203c5c",
+    fontSize: "2rem",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    textShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
+  },
+  visualizationsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: "20px",
+    width: "100%",
+    maxWidth: "1200px", // Maximum width of container
+    marginBottom: "30px",
+  },
+  chartContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+    boxShadow: "0 5px 10px rgba(0, 0, 0, 0.1)",
+    padding: "20px",
+    textAlign: "center",
+  },
+  cardContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", // Responsive grid for cards
+    gap: "15px", // Spacing between cards
+    width: "100%",
+    maxWidth: "1200px", // Max width for larger screens
+    padding: "10px",
+    boxSizing: "border-box",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+    boxShadow: "0 5px 10px rgba(0, 0, 0, 0.1)",
+    padding: "20px",
+    width: "100%",
+  },
+  cardTitle: {
+    color:" black",
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    marginBottom: "15px",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+  },
+  tableCell: {
+    padding: "8px 12px",
+    textAlign: "left",
+    borderBottom: "1px solid #ddd",
+  },
 };
 
-// Style for section titles
-const sectionTitleStyle = {
-  fontSize: '1.5rem',
-  fontWeight: '600',
-  marginBottom: '10px',
-  color: '#333',
-};
-
-// Style for list items
-const listStyle = {
-  listStyleType: 'none',
-  paddingLeft: '0',
-  color: '#666',
-};
-
-// Style for paragraphs
-const paragraphStyle = {
-  color: '#666',
-  marginBottom: '15px',
-};
-export default MedicalTestReports;
+export default App;

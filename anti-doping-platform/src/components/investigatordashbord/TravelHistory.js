@@ -1,51 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
-// const travelData = [
-//   {
-//     Date: "2024-11-01",
-//     Destination: "Vienna, Austria",
-//     Purpose: "Competition",
-//     Duration: "5 days",
-//     VisaDetails: "Schengen Visa (Valid: 2024-01-01 to 2024-12-31)",
-//     TicketCost: "$450",
-//     AccompanyingPersons: "Coach: John Doe",
-//     Coordinates: [48.2082, 16.3738],
-//     flagged: false,
-//     RiskScore: 3, // Scale of 1-10
-//     Weather: "Mild (20°C)",
-//   },
-//   {
-//     Date: "2024-10-15",
-//     Destination: "Moscow, Russia",
-//     Purpose: "Training Camp",
-//     Duration: "10 days",
-//     VisaDetails: "Russian Tourist Visa (Valid: 2024-06-01 to 2025-05-31)",
-//     TicketCost: "$600",
-//     AccompanyingPersons: "Physiotherapist: Jane Smith",
-//     Coordinates: [55.7558, 37.6173],
-//     flagged: true,
-//     RiskScore: 8,
-//     Weather: "Cold (-5°C)",
-//   },
-//   {
-//     Date: "2024-09-10",
-//     Destination: "Nairobi, Kenya",
-//     Purpose: "Altitude Training",
-//     Duration: "14 days",
-//     VisaDetails: "E-Visa (Valid: 2024-09-01 to 2024-12-31)",
-//     TicketCost: "$700",
-//     AccompanyingPersons: "Training Partner: Alex Brown",
-//     Coordinates: [-1.286389, 36.817223],
-//     flagged: false,
-//     RiskScore: 6,
-//     Weather: "Warm (25°C)",
-//   },
-// ];
-
-const TravelHistory = ({athleteId}) => {
+const TravelHistory = ({ athleteId }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [travelData, setTravelData] = useState([]);
 
@@ -53,33 +11,31 @@ const TravelHistory = ({athleteId}) => {
     try {
       const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
       setTravelData(response?.data?.TravelHistory);
-
-      console.log(response?.data?.TravelHistory)
-
+      console.log(response?.data?.TravelHistory);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
 
-
   return (
     <div style={styles.pageContainer}>
       <header style={styles.header}>
-      <h4
-        style={{
-          textAlign: 'center',
-          marginBottom: '30px',
-          fontSize: '2.5rem',
-          fontWeight: '600',
-          color: '#333',
-          textTransform: 'uppercase',
-        }}
-      >
-        Travel History
-      </h4>
+        <h4
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontSize: "2.5rem",
+            fontWeight: "600",
+            color: "#333",
+            textTransform: "uppercase",
+          }}
+        >
+          Travel History
+        </h4>
       </header>
 
       <main style={styles.main}>
@@ -88,7 +44,7 @@ const TravelHistory = ({athleteId}) => {
           <h2 style={styles.sectionTitle}>Travel History</h2>
           <table style={styles.table}>
             <thead>
-              <tr>
+              <tr style={styles.headerRow}>
                 <th style={styles.th}>Date</th>
                 <th style={styles.th}>Destination</th>
                 <th style={styles.th}>Purpose</th>
@@ -102,9 +58,7 @@ const TravelHistory = ({athleteId}) => {
               {travelData?.map((event, index) => (
                 <tr
                   key={index}
-                  style={
-                    event.Flagged ? styles.suspiciousRow : styles.normalRow
-                  }
+                  style={event.Flagged ? styles.suspiciousRow : styles.normalRow}
                   onClick={() => setSelectedRow(event)}
                 >
                   <td style={styles.td}>{event.Date}</td>
@@ -128,9 +82,7 @@ const TravelHistory = ({athleteId}) => {
             zoom={2}
             style={styles.map}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {travelData?.map((event, index) => (
               <Marker key={index} position={event?.Coordinates}>
                 <Popup>
@@ -215,9 +167,11 @@ const styles = {
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     backgroundColor: "#fff",
   },
-  th: {
-    backgroundColor: "#007bff",
+  headerRow: {
+    backgroundColor: "#203c5c",
     color: "#fff",
+  },
+  th: {
     padding: "10px",
     textAlign: "left",
   },

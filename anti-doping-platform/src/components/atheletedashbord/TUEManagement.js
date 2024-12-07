@@ -38,7 +38,7 @@ const TueManagement = () => {
             </p>
             <button
               onClick={handleSubmitApplicationClick} // Trigger file explorer
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="mt-4 px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] focus:outline-none focus:ring-2 focus:ring-[#203c5c] focus:ring-offset-2"
               aria-label="Submit a new TUE application"
             >
               Submit Application
@@ -52,7 +52,7 @@ const TueManagement = () => {
               Track the progress of your TUE applications and stay informed about approval or additional requirements.
             </p>
             <button
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="mt-4 px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] focus:outline-none focus:ring-2 focus:ring-[#203c5c] focus:ring-offset-2"
               aria-label="Check the status of your TUE applications"
             >
               Check Status
@@ -67,7 +67,7 @@ const TueManagement = () => {
             </p>
             <button
               onClick={handleUploadDocumentsClick} // Trigger file explorer
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="mt-4 px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] focus:outline-none focus:ring-2 focus:ring-[#203c5c] focus:ring-offset-2"
               aria-label="Upload documents for your TUE application"
             >
               Upload Documents
@@ -81,7 +81,7 @@ const TueManagement = () => {
               Access a list of all your approved TUEs, including validity dates and relevant details.
             </p>
             <button
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="mt-4 px-4 py-2 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] focus:outline-none focus:ring-2 focus:ring-[#203c5c] focus:ring-offset-2"
               aria-label="View the list of approved TUEs"
             >
               View Approved TUEs
@@ -95,7 +95,7 @@ const TueManagement = () => {
             Need help with your TUE application or have questions about the process?
           </p>
           <button
-            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="mt-4 px-6 py-3 bg-[#203c5c] text-white rounded-md hover:bg-[#182d46] focus:outline-none focus:ring-2 focus:ring-[#203c5c] focus:ring-offset-2"
             aria-label="Contact support for TUE-related inquiries"
           >
             Contact Support

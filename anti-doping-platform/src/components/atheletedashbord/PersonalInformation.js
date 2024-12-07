@@ -214,8 +214,8 @@ const styles = {
     backgroundColor: '#ffffff',
     borderRadius: '12px',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    width: '80%', // Increased width for larger card
-    maxWidth: '800px', // Adjust max width for larger content
+    width: '80%',
+    maxWidth: '800px',
     padding: '30px',
     margin: '10px',
   },
@@ -227,10 +227,10 @@ const styles = {
   name: {
     fontSize: '24px',
     fontWeight: 'bold',
-    color: '#007BFF', // Blue color
+    color: '#203c5c',
   },
   editButton: {
-    backgroundColor: '#007BFF', // Blue color for button
+    backgroundColor: '#203c5c',
     color: 'white',
     padding: '8px 16px',
     border: 'none',

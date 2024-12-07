@@ -107,7 +107,7 @@ const styles = {
   outcome: (outcome) => ({
     fontSize: '18px',
     fontWeight: '500',
-    color: outcome === 'Negative' ? 'green' : outcome === 'Positive' ? 'red' : 'orange',
+    color: outcome === 'Negative' ? 'green' : outcome === 'Positive' ? '#89292e' : 'orange',
   }),
   resultDetails: {
     marginTop: '10px',
@@ -115,11 +115,11 @@ const styles = {
     color: '#555',
   },
   flaggedText: {
-    color: 'red',
+    color: '#89292e',
     fontWeight: '600',
   },
   downloadLink: {
-    color: '#007BFF',
+    color: '#203c5c',
     fontWeight: '600',
     textDecoration: 'none',
     marginTop: '10px',
@@ -132,7 +132,7 @@ const styles = {
     textAlign: 'center',
   },
   downloadButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#203c5c',
     color: 'white',
     padding: '12px 20px',
     border: 'none',

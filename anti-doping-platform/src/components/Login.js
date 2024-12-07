@@ -17,13 +17,14 @@ const Login = () => {
       return;
     }
 
-    await LoginUser({email:email, password:password});
+    await LoginUser({ email: email, password: password });
 
     // Reset fields
     setEmail("");
     setPassword("");
     setError("");
   };
+
   const LoginUser = async (values) => {
     try {
       const response = await axios.post("http://localhost:8080/users/signin", values);
@@ -41,52 +42,112 @@ const Login = () => {
     } catch (error) {
       console.log("err : ", error?.response?.data);
     }
-  }
+  };
+
   return (
-    
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#203c5c", // Solid background color
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <div
         style={{
-          maxWidth: "400px",
-          margin: "auto",
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
+          maxWidth: "450px",
+          width: "100%",
+          backgroundColor: "#fff",
+          borderRadius: "10px",
+          padding: "30px 40px",
+          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+          textAlign: "center",
         }}
       >
-        <h2>Login</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <h2
+          style={{
+            color: "#203c5c",
+            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            marginBottom: "20px",
+            fontSize: "2rem",
+            fontWeight: "bold",
+          }}
+        >
+          Welcome Back!
+        </h2>
+
+        {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          <div className="flex gap-4 mb-4">
+          <div style={{ marginBottom: "15px" }}>
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Email Address"
               value={email}
-              className="border p-2 rounded-md flex-1"
               onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                fontSize: "1rem",
+                border: "2px solid #203c5c",
+                borderRadius: "8px",
+                outline: "none",
+                boxSizing: "border-box",
+                transition: "border-color 0.3s",
+              }}
               required
             />
           </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            className="border p-2 rounded-md w-full mb-4"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <div className="flex items-center gap-2 mb-4"></div>
+          <div style={{ marginBottom: "25px" }}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                fontSize: "1rem",
+                border: "2px solid #203c5c",
+                borderRadius: "8px",
+                outline: "none",
+                boxSizing: "border-box",
+                transition: "border-color 0.3s",
+              }}
+            />
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-pink-500 text-white py-2 rounded-md"
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              fontSize: "1.1rem",
+              backgroundColor: "#203c5c",
+              color: "#fff",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "bold",
+              transition: "background-color 0.3s, transform 0.3s",
+            }}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "#2c577a")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "#203c5c")}
           >
             Login
           </button>
         </form>
+
+        <div style={{ marginTop: "15px", fontSize: "0.9rem" }}>
+          <p style={{ color: "#203c5c" }}>
+            Don't have an account? <a href="/signup" style={{ color: "#203c5c", fontWeight: "bold" }}>Sign Up</a>
+          </p>
+        </div>
       </div>
+    </div>
   );
 };
 

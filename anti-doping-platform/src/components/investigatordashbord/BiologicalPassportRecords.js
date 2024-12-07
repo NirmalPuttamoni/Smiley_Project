@@ -1,244 +1,394 @@
-import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // For line chart
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import axios from "axios";
 
-const BiologicalPassportRecords = ({athleteId}) => {
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-  const [athleteDetails, setAthleteDetails] = useState({});
+const AthleteBiologicalPassport = ({athleteId}) => {
   
+  const [AthleteDetails, setAthleteDetails] = useState({});
+  const [athleteProfile, setAthleteProfile] = useState({});
+  const [bloodProfileResults, setBloodProfileResults] = useState({});
+  const [urineProfileResults, setUrineProfileResults] = useState({});
+  const [hormonalMarkersResults, setHormonalMarkersResults] = useState({});
+  const [thresholdLimits, setThresholdLimits] = useState({});
+  
+  // Predetermined results
+  // const bloodProfileResults = {
+  //   hematocrit: 44,
+  //   hemoglobin: 14,
+  //   reticulocyte: 1.3,
+  //   ferritin: 120,
+  // };
+
+  // const urineProfileResults = {
+  //   teRatio: 0.8,
+  //   syntheticHormones: 0.4,
+  // };
+
+  // const hormonalMarkersResults = {
+  //   testosterone: 8,
+  //   growthHormone: 4,
+  //   cortisol: 18,
+  //   thyroidHormones: 4.2,
+  // };
+
+  // const thresholdLimits = {
+  //   hematocrit: 45,
+  //   hemoglobin: 15,
+  //   reticulocyte: 1.5,
+  //   ferritin: 100,
+  //   teRatio: 1,
+  //   syntheticHormones: 0.5,
+  //   testosterone: 10,
+  //   growthHormone: 5,
+  //   cortisol: 20,
+  //   thyroidHormones: 4.5,
+  // };
+
+  // Athlete profile data
+  // const athleteProfile = {
+  //   name: 'John Doe',
+  //   age: 25,
+  //   gender: 'Male',
+  //   sport: 'Track and Field',
+  //   team: 'National Team',
+  //   position: 'Sprinter',
+  //   profileImage: 'https://via.placeholder.com/150', // Add a placeholder image URL or the athlete's image URL
+  //   contactInfo: {
+  //     phone: '+1 (555) 123-4567',
+  //     email: 'johndoe@example.com',
+  //     address: '1234 Athlete Lane, Sports City, Country',
+  //   },
+  //   performanceStats: {
+  //     best100mTime: '10.4s',
+  //     best200mTime: '21.3s',
+  //     olympics: '2024',
+  //     worldRecord: '9.58s',
+  //   },
+  //   careerAchievements: [
+  //     'Gold Medal, 2020 Olympics',
+  //     'World Champion 100m, 2022',
+  //     'National Record Holder 200m, 2021',
+  //   ],
+  // };
+
   const getData = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", {athleteId: athleteId});
-      setAthleteDetails(response?.data?.BiologicalPassportRecords);
+      const response = await axios.post("http://localhost:8080/athletes/get-athlete-details-by-id", { athleteId: athleteId });
+      const data = response?.data?.BiologicalPassportRecords;
+
+      setAthleteDetails(data);
+      setBloodProfileResults(data?.bloodProfileResults);
+      setUrineProfileResults(data?.urineProfileResults);
+      setHormonalMarkersResults(data?.hormonalMarkersResults);
+      setThresholdLimits(data?.thresholdLimits);
+
+      setAthleteProfile({
+        name: data?.name,
+        age: data?.age,
+        gender: data?.gender,
+        sport: data?.sport,
+        team: data?.team,
+        position: data?.position,
+        profileImage: data?.profileImage,
+        contactInfo: data?.contactInfo,
+        performanceStats: data?.performanceStats,
+        careerAchievements: data?.careerAchievements,
+      });
+
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(athleteDetails)
   useEffect(() => {
     getData();
   }, []);
 
-
-  // Sample data for visualization
-  // const sampleDataLine = [
-  //   { date: '2024-01-01', value: 0.8 },
-  //   { date: '2024-02-01', value: 0.85 },
-  //   { date: '2024-03-01', value: 0.9 },
-  //   { date: '2024-04-01', value: 0.88 },
-  //   { date: '2024-05-01', value: 0.92 },
-  //   { date: '2024-06-01', value: 0.91 },
-  // ];
-  
-  const sampleDataLine = athleteDetails?.SampleDataLine;
-
-  // State to handle hover effects
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  // Handler for mouse enter
-  const handleMouseEnter = (cardId) => {
-    setHoveredCard(cardId);
+  // Function to determine the status based on the result and threshold
+  const getStatus = (result, threshold) => {
+    if (result === 0) return 'Not Tested';
+    return result > threshold ? 'Above Threshold' : 'Within Threshold';
   };
 
-  // Handler for mouse leave
-  const handleMouseLeave = () => {
-    setHoveredCard(null);
+  // Function to create chart data
+  const createChartData = (resultData, thresholdData) => {
+    return {
+      labels: Object.keys(resultData||{}),
+      datasets: [
+        {
+          label: 'Test Result',
+          data: Object.values(resultData||{}),
+          backgroundColor: '#d0cccc', // Custom color for the result bars
+          borderColor: '#d0cccc', // Custom border color for the result bars
+          borderWidth: 1,
+        },
+        {
+          label: 'Threshold Limit',
+          data: Object.values(thresholdData||{}),
+          backgroundColor: '#a8bcc4', // Custom color for the threshold bars
+          borderColor: '#a8bcc4', // Custom border color for the threshold bars
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Test Results vs Threshold Limits',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  const styles = {
+    container: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(480px, 1fr))',
+      gap: '20px',
+      padding: '20px',
+    },
+    card: {
+      padding: '20px',
+      border: '2px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+      backgroundColor: '#fff',
+      transition: 'transform 0.3s ease-in-out',
+    },
+    cardHover: {
+      transform: 'scale(1.02)',
+    },
+   
+    heading: {
+      textAlign: 'center',
+      color: '#333',
+      fontSize: '24px',
+      marginBottom: '20px',
+      fontWeight: 'bold',
+    },
+    section: {
+      marginBottom: '20px',
+      padding: '10px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      backgroundColor: '#f9f9f9',
+    },
+    sectionTitle: {
+      fontSize: '20px',
+      marginBottom: '10px',
+      fontWeight: 'bold',
+      color: '#555',
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      marginBottom: '20px',
+    },
+    th: {
+      padding: '8px',
+      textAlign: 'left',
+      backgroundColor: '#f2f2f2',
+      borderBottom: '1px solid #ddd',
+    },
+    td: {
+      padding: '8px',
+      borderBottom: '1px solid #ddd',
+      textAlign: 'center',
+    },
+    athleteProfileCard: {
+      padding: '20px',
+      border: '2px solid #ddd',
+      borderRadius: '12px',
+      boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+      backgroundColor: '#fff',
+      marginBottom: '20px',
+      transition: 'transform 0.3s ease-in-out',
+    },
+    athleteProfileCardHover: {
+      transform: 'scale(1.02)',
+    },
+    profileImage: {
+      width: '150px',
+      height: '150px',
+      borderRadius: '50%',
+      objectFit: 'cover',
+      border: '4px solid #4e73df',
+      marginBottom: '20px',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+    },
+    profileInfo: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px',
+      alignItems: 'center',
+    },
+    profileLabel: {
+      fontWeight: 'bold',
+      color: '#555',
+    },
+    profileValue: {
+      color: '#333',
+      fontSize: '16px',
+      textAlign: 'center',
+    },
+    contactInfo: {
+      backgroundColor: '#f3f4f6',
+      padding: '15px',
+      borderRadius: '8px',
+      marginTop: '10px',
+      width: '100%',
+    },
+    achievements: {
+      listStyleType: 'disc',
+      paddingLeft: '20px',
+      marginTop: '15px',
+      color: '#333',
+    },
   };
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#f4f7f6', borderRadius: '10px' }}>
-      <h4
-        style={{
-          textAlign: 'center',
-          marginBottom: '30px',
-          fontSize: '2.5rem',
-          fontWeight: '600',
-          color: '#333',
-          textTransform: 'uppercase',
-        }}
-      >
-        Biological Passport Records
-      </h4>
-
-      {/* Card Grid - 3 cards per row */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card1' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card1')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>1. Athlete Information</h4>
-          <ul style={listStyle}>
-            <li><strong>Full Name:</strong>{athleteDetails?.FullName}</li>
-            <li><strong>Gender:</strong>{athleteDetails?.Gender}</li>
-            <li><strong>Sport:</strong>{athleteDetails?.Sport}</li>
-            <li><strong>Date of Birth:</strong>{athleteDetails?.DateOfBirth}</li>
-            <li><strong>Unique Athlete ID:</strong>{athleteDetails?.UniqueAthleteID}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card2' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card2')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>2. Data Collected</h4>
-          <ul style={listStyle}>
-            <li><strong>Parameters Monitored:</strong>{athleteDetails?.ParametersMonitored}</li>
-            <li><strong>Collection Method:</strong>{athleteDetails?.CollectionMethod}</li>
-            <li><strong>Collection Frequency:</strong>{athleteDetails?.CollectionFrequency}</li>
-            <li><strong>Medical Professional:</strong>{athleteDetails?.MedicalProfessional}</li>
-          </ul>
-        </div>
-
-        <div
-          className="card"
-          style={{ ...cardStyle, boxShadow: hoveredCard === 'card3' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card3')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>3. Data Analysis</h4>
-          <ul style={listStyle}>
-            <li><strong>Testing Methods:</strong> {athleteDetails?.TestingMethods}</li>
-            <li><strong>Threshold Levels:</strong> {Object.entries(athleteDetails?.ThresholdLevels || {}).map(([key, value]) => (
-                <li key={key}>{key}: {value}</li>
-            ))}</li>
-            <li><strong>Alerts & Flags:</strong>{athleteDetails?.AlertsFlags}</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Card Grid - 3 cards per row */}
-      <div style={cardGridStyle}>
-        <div
-          className="card"
-          style={{ ...cardStyle, width:"100%", boxShadow: hoveredCard === 'card4' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card4')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>4. Biological Data Trend</h4>
-          <p style={paragraphStyle}>
-            The biological data trends over time help in detecting abnormalities. Below is a line chart representing one of the tracked parameters.
-          </p>
-          <div style={{ width: '100%', height: '300px', marginTop: '20px' }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={sampleDataLine}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
+    <div style={styles.container}>
+      {/* Athlete Profile Card */}
+      <div style={{ ...styles.athleteProfileCard, ...styles.athleteProfileCardHover }}>
+        <h1 style={styles.heading}>Athlete Profile</h1>
+        <div style={styles.profileInfo}>
+          <img src={athleteProfile?.profileImage} alt="Profile" style={styles.profileImage} />
+          <div>
+            <span style={styles.profileLabel}>Name:</span>
+            <span style={styles.profileValue}>{athleteProfile.name}</span>
+          </div>
+          <div>
+            <span style={styles.profileLabel}>Age:</span>
+            <span style={styles.profileValue}>{athleteProfile.age}</span>
+          </div>
+          <div>
+            <span style={styles.profileLabel}>Gender:</span>
+            <span style={styles.profileValue}>{athleteProfile.gender}</span>
+          </div>
+          <div>
+            <span style={styles.profileLabel}>Sport:</span>
+            <span style={styles.profileValue}>{athleteProfile.sport}</span>
+          </div>
+          <div>
+            <span style={styles.profileLabel}>Team:</span>
+            <span style={styles.profileValue}>{athleteProfile.team}</span>
+          </div>
+          <div>
+            <span style={styles.profileLabel}>Position:</span>
+            <span style={styles.profileValue}>{athleteProfile.position}</span>
           </div>
         </div>
 
-        <div
-          className="card"
-          style={{ ...cardStyle,width:"40%" , boxShadow: hoveredCard === 'card5' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card5')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>5. Alerts and Notifications</h4>
-          <ul style={listStyle}>
-            <li><strong>Threshold Violations:</strong> {athleteDetails?.ThresholdViolations}</li>
-            <li><strong>Potential Doping:</strong> {athleteDetails?.PotentialDoping}</li>
-            <li><strong>Regulatory Compliance:</strong> {athleteDetails?.RegulatoryCompliance}</li>
-          </ul>
+        {/* Contact Information */}
+        <div style={styles.contactInfo}>
+          <h2 style={styles.sectionTitle}>Contact Information</h2>
+          <div><span style={styles.profileLabel}>Phone:</span><span style={styles.profileValue}>{athleteProfile?.contactInfo?.phone}</span></div>
+          <div><span style={styles.profileLabel}>Email:</span><span style={styles.profileValue}>{athleteProfile?.contactInfo?.email}</span></div>
+          <div><span style={styles.profileLabel}>Address:</span><span style={styles.profileValue}>{athleteProfile?.contactInfo?.address}</span></div>
         </div>
 
-        <div
-          className="card"
-          style={{ ...cardStyle, width:"40%",boxShadow: hoveredCard === 'card6' ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 6px 12px rgba(0, 0, 0, 0.1)' }}
-          onMouseEnter={() => handleMouseEnter('card6')}
-          onMouseLeave={handleMouseLeave}
-        >
-          <h4 style={sectionTitleStyle}>6. Compliance and Review</h4>
-          <ul style={listStyle}>
-            <li><strong>Verification:</strong> {athleteDetails?.Verification}</li>
-            <li><strong>Record Updates:</strong>{athleteDetails?.RecordUpdates}</li>
-            <li><strong>Review Cycle:</strong>{athleteDetails?.ReviewCycle}</li>
+        {/* Career Achievements */}
+        <div style={styles.contactInfo}>
+          <h2 style={styles.sectionTitle}>Career Achievements</h2>
+          <ul style={styles.achievements}>
+            {athleteProfile?.careerAchievements?.map((achievement, index) => (
+              <li key={index}>{achievement}</li>
+            ))}
           </ul>
         </div>
       </div>
 
-      {/* Download Button */}
-      <div style={downloadButtonContainer}>
-        <button style={downloadButtonStyle} onClick={() => alert('Downloading Biological Passport Record...')}>
-          Download Biological Passport Record
-        </button>
+      {/* Blood Profile */}
+      <div style={styles.card}>
+        <h2 style={styles.heading}>Blood Profile</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Test</th>
+              <th style={styles.th}>Result</th>
+              <th style={styles.th}>Threshold</th>
+              <th style={styles.th}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {['hematocrit', 'hemoglobin', 'reticulocyte', 'ferritin'].map((key) => (
+              <tr key={key}>
+                <td style={styles.td}>{key.charAt(0).toUpperCase() + key.slice(1)}</td>
+                <td style={styles.td}>{bloodProfileResults?.[key]}</td>
+                <td style={styles.td}>{thresholdLimits?.[key]}</td>
+                <td style={styles.td}>{getStatus(bloodProfileResults?.[key], thresholdLimits?.[key])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Bar data={createChartData(bloodProfileResults, thresholdLimits)} options={chartOptions} />
+      </div>
+
+      {/* Urine Profile */}
+      <div style={styles.card}>
+        <h2 style={styles.heading}>Urine Profile</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Test</th>
+              <th style={styles.th}>Result</th>
+              <th style={styles.th}>Threshold</th>
+              <th style={styles.th}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {['teRatio', 'syntheticHormones'].map((key) => (
+              <tr key={key}>
+                <td style={styles.td}>{key.charAt(0).toUpperCase() + key.slice(1)}</td>
+                <td style={styles.td}>{urineProfileResults?.[key]}</td>
+                <td style={styles.td}>{thresholdLimits?.[key]}</td>
+                <td style={styles.td}>{getStatus(urineProfileResults?.[key], thresholdLimits?.[key])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Bar data={createChartData(urineProfileResults, thresholdLimits)} options={chartOptions} />
+      </div>
+
+      {/* Hormonal Markers */}
+      <div style={styles.card}>
+        <h2 style={styles.heading}>Hormonal Markers</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Test</th>
+              <th style={styles.th}>Result</th>
+              <th style={styles.th}>Threshold</th>
+              <th style={styles.th}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {['testosterone', 'growthHormone', 'cortisol', 'thyroidHormones'].map((key) => (
+              <tr key={key}>
+                <td style={styles.td}>{key.charAt(0).toUpperCase() + key.slice(1)}</td>
+                <td style={styles.td}>{hormonalMarkersResults?.[key]}</td>
+                <td style={styles.td}>{thresholdLimits?.[key]}</td>
+                <td style={styles.td}>{getStatus(hormonalMarkersResults?.[key], thresholdLimits?.[key])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Bar data={createChartData(hormonalMarkersResults, thresholdLimits)} options={chartOptions} />
       </div>
     </div>
   );
 };
 
-// Styles
-const headerStyle = {
-  fontSize: '24px',
-  fontWeight: 'bold',
-  color: '#2d3748',
-  marginBottom: '20px',
-};
-
-const descriptionStyle = {
-  fontSize: '16px',
-  marginBottom: '20px',
-  color: '#4A5568',
-};
-
-const cardGridStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
-  gap: '20px',
-  marginBottom: '30px',
-};
-
-const cardStyle = {
-  width: '30%',
-  backgroundColor: 'white',
-  borderRadius: '10px',
-  padding: '20px',
-  boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
-  transition: 'box-shadow 0.3s ease-in-out',
-};
-
-const sectionTitleStyle = {
-  fontSize: '1.25rem',
-  fontWeight: '600',
-  color: '#2d3748',
-  marginBottom: '15px',
-};
-
-const listStyle = {
-  listStyleType: 'none',
-  paddingLeft: '0',
-  fontSize: '14px',
-  lineHeight: '1.8',
-};
-
-const paragraphStyle = {
-  fontSize: '14px',
-  color: '#4A5568',
-};
-
-const downloadButtonContainer = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginTop: '30px',
-};
-
-const downloadButtonStyle = {
-  backgroundColor: '#4CAF50',
-  color: 'white',
-  padding: '10px 20px',
-  fontSize: '16px',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease',
-};
-
-export default BiologicalPassportRecords;
+export default AthleteBiologicalPassport;

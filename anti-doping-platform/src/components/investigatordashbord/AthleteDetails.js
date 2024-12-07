@@ -1,143 +1,216 @@
-import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom'; // Import Link for routing
-import RightPanel from './RightPanel'; // Import RightPanel component
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaBars } from "react-icons/fa";
+import RightPanel from "./RightPanel";
 
 const AthleteDetails = () => {
-  const [selectedSection, setSelectedSection] = useState('Medical Test Reports'); // Default to a valid section
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("Medical Test Reports"); // Default section
   const params = useParams();
+  const navigate = useNavigate();
 
-  // console.log(params.athleteId)
+  const investigatorName = { name: "John Doe" }; // Placeholder for investigator's name
+
+  const handleMenuItemClick = (item) => {
+    setSelectedSection(item);
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   return (
-    <div style={containerStyle}>
-      {/* Left Panel */}
-      <div style={leftPanelStyle}>
-        <h3 style={headerStyle}>Athlete Details</h3>
-        <ul style={menuListStyle}>
-          {menuItems.map((item) => (
-            <li
-              key={item}
-              style={{
-                ...menuItemStyle,
-                backgroundColor: selectedSection === item ? '#1e40af' : '#3b82f6', // Highlight selected item
-                color: selectedSection === item ? '#fff' : '#e0e7ff', // Light text for unselected
-              }}
-              onClick={() => setSelectedSection(item)}
+    <div>
+      {/* Navigation Bar */}
+      <nav className="bg-[#203C5C] sticky top-0 z-10 py-4 shadow-lg">
+        <div className="flex justify-between items-center px-6 text-white">
+          {/* Back Button */}
+          <div className="flex items-center">
+            <button
+              onClick={handleGoBack}
+              className="flex items-center justify-center text-white p-2 rounded-full focus:outline-none mr-4"
+              aria-label="Go Back"
             >
-              {item}
-            </li>
-          ))}
-        </ul>
-        {/* Analyze Button */}
+              <FaArrowLeft size={18} />
+            </button>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/29/Ministry_of_Youth_Affairs_and_Sports.svg"
+              alt="Ministry Logo"
+              className="h-12 w-auto filter invert mr-4"
+            />
+            <span className="text-2xl font-bold">Athlete Details</span>
+          </div>
+
+          {/* Profile Picture */}
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden shadow-xl">
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-white font-medium text-lg">
+              {investigatorName.name}
+            </span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div style={containerStyle}>
+        {/* Sidebar */}
+        {isMenuOpen && (
+          <div style={leftPanelStyle}>
+            <h3 style={{...headerStyle, fontSize:"20px"}}>Athlete Details</h3>
+            <ul style={menuListStyle}>
+              {menuItems.slice(0, -1).map((item) => (  // Excluding Analyze from the loop
+                <li
+                  key={item}
+                  style={{
+                    ...menuItemStyle,
+                    backgroundColor:
+                      selectedSection === item ? "#346195" : "#203c5c", // Updated color for selected
+                    color: selectedSection === item ? "#ffffff" : "#e6f1ff",
+                    fontWeight: selectedSection === item ? "800" : "600",
+                  }}
+                  onClick={() => handleMenuItemClick(item)}
+                >
+                  {item}
+                </li>
+              ))}
+              <li
+                style={{
+                  ...menuItemStyle,
+                  backgroundColor: "#ffffff", // White background for the Analyze button
+                  color: "#203c5c", // Blue text for the Analyze button
+                  fontWeight: "800", // Bold font for Analyze button
+                  marginTop: "auto", // Push it to the bottom
+                  display: 'flex', // Make the li a flex container
+                  justifyContent: 'center', // Center horizontally
+                  alignItems: 'center', // Center vertically
+                }}
+                onClick={() => handleMenuItemClick("Analyze")}
+              >
+                Analyze
+              </li>
+            </ul>
+          </div>
+        )}
+
+        {/* Content Area */}
+        <div style={rightPanelStyle}>
+          <RightPanel
+            selectedSection={selectedSection}
+            athleteId={params.athleteId}
+          />
+        </div>
+
+        {/* Hamburger Icon */}
         <div
           style={{
-            ...analyzeStyle,
-            backgroundColor: selectedSection === 'Analyze' ? '#ffffff' : '#ffffff',
-            color: selectedSection === 'Analyze' ? '#1e40af' : '#1e40af',
+            ...hamburgerStyle,
+            color: isMenuOpen ? "#ffffff" : "#203c5c",
           }}
-          onClick={() => setSelectedSection('Analyze')}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          ANALYZE
+          <FaBars size={24} />
         </div>
-      </div>
-
-      {/* Right Panel */}
-      <div style={rightPanelStyle}>
-        <RightPanel selectedSection={selectedSection} athleteId={params.athleteId} />
+        
       </div>
     </div>
   );
 };
 
-// Static menu items
+// Menu items
 const menuItems = [
-  'Medical Test Reports',
-  'Biological Passport Records',
-  'Access to Social Media',
-  'Financial Transactions',
-  'Travel History',
+  "Medical Test Reports",
+  "Biological Passport Records",
+  "Access to Social Media",
+  "Financial Transactions",
+  "Travel History",
+  "Performance",
+  "Analyze", // Analyze button is now at the bottom
 ];
 
-// Styles for AthleteDetails
+// Styles
 const containerStyle = {
-  display: 'flex',
-  height: '100vh', // Full viewport height
-  fontFamily: "'Poppins', sans-serif", // Clean and modern font
-  backgroundColor: '#f3f4f6', // Light background for contrast
+  display: "flex",
+  height: "84vh",
+  margin: "2vh auto",
+  borderRadius: "24px",
+  overflow: "hidden",
+  width: "98.5%",
+  fontFamily: "'Poppins', sans-serif",
+  backgroundColor: "#eef3f8",
+  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
+  position: "relative",
 };
 
 const leftPanelStyle = {
-  width: '25%',
-  backgroundColor: '#2563eb', // Rich blue for the left panel
-  padding: '30px 20px',
-  borderRight: '2px solid #e5e7eb',
-  position: 'fixed', // Keeps the panel static
-  top: 0,
-  left: 0,
-  bottom: 0,
-  overflow: 'hidden', // Prevent unnecessary scroll
-  color: '#fff', // Text in white for contrast
-  boxShadow: '2px 0 10px rgba(0, 0, 0, 0.15)', // Shadow effect
+  width: "25%",
+  backgroundColor: "#203c5c",
+  padding: "30px 20px",
+  borderRadius: "24px 0 0 24px",
+  color: "#ffffff",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  boxShadow: "inset 0 3px 8px rgba(0, 0, 0, 0.25)",
 };
 
 const headerStyle = {
-  fontSize: '28px',
-  fontWeight: '700',
-  marginBottom: '40px',
-  textTransform: 'uppercase',
-  letterSpacing: '2px',
-  textAlign: 'center',
-  borderBottom: '3px solid #1e40af',
-  paddingBottom: '10px',
+  fontSize: "28px",
+  fontWeight: "800",
+  marginBottom: "25px",
+  textTransform: "uppercase",
+  letterSpacing: "1.5px",
+  textAlign: "center",
+  borderBottom: "2px solid #162c42",
+  paddingBottom: "10px",
+  color: "#ffffff",
+  textShadow: "2px 2px 6px rgba(0, 0, 0, 0.3)",
 };
 
 const menuListStyle = {
-  listStyleType: 'none',
-  padding: '0',
+  listStyleType: "none",
+  padding: "0",
+  width: "100%",
+  overflow: "auto",
 };
 
 const menuItemStyle = {
-  padding: '15px 20px',
-  marginBottom: '20px',
-  cursor: 'pointer',
-  borderRadius: '12px',
-  transition: 'all 0.3s ease',
-  backgroundColor: '#3b82f6', // Default blue
-  color: '#e0e7ff', // Softer light blue text
-  textAlign: 'left',
-  fontWeight: '500',
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Subtle shadow
+  padding: "4px 25px",
+  marginBottom: "1.5rem",
+  cursor: "pointer",
+  borderRadius: "16px",
+  transition: "all 0.3s ease",
+  backgroundColor: "#203c5c",
+  color: "#e6f1ff",
+  fontWeight: "600",
+  textAlign: "left",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+  textShadow: "1px 1px 4px rgba(0, 0, 0, 0.5)",
+  lineHeight: "1.6",
+  letterSpacing: "0.5px",
 };
 
-// Add hover effect for menu items
-menuItemStyle[':hover'] = {
-  backgroundColor: '#1e3a8a', // Darker blue on hover
-  transform: 'scale(1.05)', // Scale up slightly
-};
-
-const analyzeStyle = {
-  padding: '20px',
-  marginTop: '60px', // Space from the menu items
-  borderRadius: '15px',
-  textAlign: 'center',
-  fontWeight: '700',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)', // Stronger shadow for emphasis
-  fontSize: '18px',
-};
-
-analyzeStyle[':hover'] = {
-  transform: 'scale(1.1)', // Slightly larger on hover
-  boxShadow: '0 8px 15px rgba(0, 0, 0, 0.3)', // Pronounced shadow
+const hamburgerStyle = {
+  position: "absolute",
+  top: "33px",
+  left: "20px",
+  zIndex: "20",
+  cursor: "pointer",
 };
 
 const rightPanelStyle = {
-  marginLeft: '25%', // Matches the fixed left panel width
   flex: 1,
-  padding: '50px',
-  backgroundColor: '#ffffff', // Clean white for content
-  boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)', // Light inset shadow
+  padding: "20px",
+  backgroundColor: "#ffffff",
+  borderRadius: "0 24px 24px 0",
+  boxShadow: "inset 0 3px 8px rgba(0, 0, 0, 0.15)",
+  overflowY: "auto",
+  maxHeight: "92vh",
 };
 
 export default AthleteDetails;
