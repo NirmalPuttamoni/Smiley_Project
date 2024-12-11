@@ -10,7 +10,8 @@ const InvestigatorDashboard = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/athletes/get-all-athletes");
+      const id = JSON.parse(sessionStorage.getItem("userData")).id;
+      const response = await axios.post("http://localhost:8080/athletes/get-all-athletes-for-investigaor",{id:id});
       const data = response?.data;
 
       setAthletesData(data);

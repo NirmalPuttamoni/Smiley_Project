@@ -53,7 +53,7 @@ const signin = async (req, res) => {
       SECRET_KEY
     );
 
-    res.status(201).json({ role:existingUser.role, name: existingUser.name ,token: token });
+    res.status(201).json({ role:existingUser.role, name: existingUser.name ,id: existingUser._id,token: token });
   } catch (error) {
     console.error("Error during signin:", error);
     res.status(500).json({ message: "Something went wrong" });
